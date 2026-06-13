@@ -1,5 +1,126 @@
 # WanGP
 
+## Start Here: RunPod Character Consistency Setup
+
+This fork adds a **WanGP Character Consistency Studio** workflow for building repeatable character videos with reference images and a cell-by-cell RunPod notebook.
+
+Use this first if you opened this GitHub repo and want to run the character-consistent video workflow.
+
+### 1. Create A RunPod GPU Notebook
+
+1. Open RunPod and create a GPU pod with a PyTorch/CUDA Jupyter template.
+2. Recommended first test: 24 GB VRAM or higher.
+3. Lower VRAM users can try the `bernini_ingredients_1_3b` mode in the notebook.
+4. Open Jupyter from the RunPod pod.
+
+### 2. Clone This Repo In Jupyter
+
+Open a notebook terminal or a new notebook cell and run:
+
+```bash
+cd /workspace
+git clone https://github.com/SohailAwg/wan2gp_studio.git Wan2GP-main
+cd /workspace/Wan2GP-main
+```
+
+### 3. Add Secrets Without Committing Them
+
+Create `/workspace/secrets.txt` on the RunPod machine:
+
+```text
+HF_TOKEN=hf_your_hugging_face_token_here
+RUNPOD_API_KEY=your_runpod_api_key_here
+```
+
+`secrets.txt` is ignored by Git. Do not commit API keys.
+
+### 4. Open The Cell-By-Cell Notebook
+
+In Jupyter, open:
+
+```text
+/workspace/Wan2GP-main/notebooks/wan2gp_character_consistency_runpod.ipynb
+```
+
+Direct GitHub link:
+[notebooks/wan2gp_character_consistency_runpod.ipynb](notebooks/wan2gp_character_consistency_runpod.ipynb)
+
+### 5. Run The Notebook In Order
+
+Run cells from top to bottom.
+
+Only edit these cells for a normal run:
+
+- **Cell 2**: repo path, output path, install flag, attention mode, memory profile.
+- **Cell 8**: character name, mode, reference image paths, identity prompt, style prompt, negative prompt, and shot prompts.
+
+Start with:
+
+```python
+ATTENTION = "sdpa"
+PROFILE = "4"
+MODE = "bernini_ingredients"
+```
+
+If you run out of VRAM, change Cell 8 to:
+
+```python
+MODE = "bernini_ingredients_1_3b"
+RESOLUTION = "832x480"
+VIDEO_LENGTH = 81
+```
+
+### 6. Upload Character Reference Images
+
+Upload your reference images into:
+
+```text
+/workspace/refs
+```
+
+Recommended names:
+
+```text
+character_front.png
+character_body.png
+character_profile.png
+```
+
+Use clear, consistent references: same character, visible face, same outfit or signature style, and at least one full-body or upper-body image.
+
+### 7. Generate One Test Shot First
+
+Run **Cell 11** first. This generates only the first shot so you can verify identity, clothing, and style before spending time on the whole batch.
+
+If the first result looks good, run **Cell 13** to generate all shots.
+
+### 8. Where Outputs Are Saved
+
+By default, videos are written to:
+
+```text
+/workspace/wan2gp_outputs
+```
+
+Character manifests are saved under:
+
+```text
+/workspace/Wan2GP-main/character_packs
+```
+
+### 9. Character Consistency Notes
+
+The workflow is based on the same broad pattern used by tools like Google Flow, Higgsfield, and OpenArt:
+
+- Keep a locked identity description.
+- Reuse strong multi-angle reference images.
+- Keep wardrobe, hair, age, body shape, colors, and accessories stable.
+- Generate one shot first, then scale to a full shot list.
+- Use negative prompts to reject face drift, changed hairstyle, changed outfit, and age changes.
+
+More details are in:
+[docs/CHARACTER_CONSISTENCY.md](docs/CHARACTER_CONSISTENCY.md)
+
 -----
 <p align="center">
 <b>WanGP by DeepBeepMeep : The best Open Source Generative Models Accessible to the GPU Poor</b>
