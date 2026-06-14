@@ -1,5 +1,6 @@
 import gradio as gr
 import json
+import os
 import traceback
 from shared.utils.plugins import WAN2GPPlugin, compare_release_metadata, is_wangp_compatible, plugin_id_from_url
 
@@ -30,6 +31,24 @@ class PluginManagerUIPlugin(WAN2GPPlugin):
         )
 
     def _get_js_script_html(self):
+        if os.environ.get("WAN2GP_KAGGLE_MODE") == "1":
+            restart_html = (
+                "\"<div style='display:flex;justify-content:center;align-items:center;"
+                "height:100vh;background-color:#0b0f19;color:#e5e7eb;"
+                "font-family:sans-serif;text-align:center;padding:24px;'>"
+                "<h2>WanGP is restarting...<br><br>"
+                "Keep this tab open. Wait about 30 seconds, then refresh this same public URL."
+                "</h2></div>\""
+            )
+            restart_followup = "setTimeout(() => window.location.reload(), 30000);"
+        else:
+            restart_html = (
+                "\"<div style='display:flex;justify-content:center;align-items:center;"
+                "height:100vh;background-color:#0b0f19;color:#e5e7eb;"
+                "font-family:sans-serif;text-align:center;'><h2>WanGP is restarting..."
+                "<br><br>You can safely close this tab.<br>A new tab will open shortly.</h2></div>\""
+            )
+            restart_followup = "window.open('', '_self', ''); window.close();"
         js_code = """
             () => {
                 function pluginRoot() {
@@ -165,14 +184,15 @@ class PluginManagerUIPlugin(WAN2GPPlugin):
 
                     if (restart) {
                         setTimeout(() => {
-                            document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;background-color:#0b0f19;color:#e5e7eb;font-family:sans-serif;text-align:center;'><h2>WanGP is restarting...<br><br>You can safely close this tab.<br>A new tab will open shortly.</h2></div>";
-                            window.open('', '_self', '');
-                            window.close();
+                            document.body.innerHTML = __RESTART_HTML__;
+                            __RESTART_FOLLOWUP__
                         }, 1000);
                     }
                 };
             }
         """
+        js_code = js_code.replace("__RESTART_HTML__", restart_html)
+        js_code = js_code.replace("__RESTART_FOLLOWUP__", restart_followup)
         return f"{js_code}"
     
     def _get_community_plugins_info(self):
