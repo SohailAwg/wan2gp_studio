@@ -2,6 +2,8 @@
 
 This system allows you to extend and customize the Wan2GP user interface and functionality without modifying the core application code. This document will guide you through the process of creating and installing your own plugins.
 
+For using the bundled **Character Consistency Studio** plugin, including character and environment consistency workflows, see [Plugin User Guide: Character And Environment Consistency](PLUGIN_USER_GUIDE_CHARACTER_ENVIRONMENT_CONSISTENCY.md).
+
 ## Table of Contents
 1.  [Plugin Structure](#plugin-structure)
 2.  [Getting Started: Creating a Plugin](#getting-started-creating-a-plugin)

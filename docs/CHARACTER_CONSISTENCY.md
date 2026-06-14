@@ -2,6 +2,8 @@
 
 This project now includes the **Character Consistency Studio** plugin. It is designed to make WanGP behave more like commercial "character" and "ingredients" workflows: create a reusable character pack, keep a locked identity prompt, attach reference images, export WanGP settings, and generate repeated shots with the same identity anchor.
 
+For a click-by-click workflow that also covers environment consistency, see [Plugin User Guide: Character And Environment Consistency](PLUGIN_USER_GUIDE_CHARACTER_ENVIRONMENT_CONSISTENCY.md).
+
 ## What the Commercial Tools Are Doing
 
 Google Flow / Veo 3.1 uses an "Ingredients to Video" style workflow. The public Gemini API docs say Veo 3.1 accepts up to three reference images of a person, character, or product to preserve appearance in the output video, and the Google Cloud prompt guide recommends generating character and setting "ingredients" before composing each shot.
@@ -69,4 +71,3 @@ print([str(error) for error in result.errors])
 - Avoid heavy filters, extreme expressions, occluding sunglasses, and mixed ages/outfits unless they are part of the character.
 - For VACE/Stand-In, use background removal or simple white backgrounds for human/object references.
 - Test short clips first, then batch shots after the character is stable.
-
