@@ -486,6 +486,20 @@ class MotionDesignerPlugin(WAN2GPPlugin):
         ):
             return self._iframe_html_cache
 
+        missing_assets = [str(path) for path in (template_path, script_path, style_path) if not path.is_file()]
+        if missing_assets:
+            print(f"[MotionDesignerPlugin] Missing iframe assets, showing disabled tab: {missing_assets}")
+            missing_list = "".join(f"<li>{path}</li>" for path in missing_assets)
+            self._iframe_html_cache = (
+                "<div style='padding:16px;border:1px solid #d6dfef;border-radius:8px;background:#fff;color:#0b1933;'>"
+                "<strong>Motion Designer is unavailable.</strong>"
+                "<p>Required plugin assets are missing from this checkout.</p>"
+                f"<ul>{missing_list}</ul>"
+                "</div>"
+            )
+            self._iframe_cache_signature = None
+            return self._iframe_html_cache
+
         template_html = template_path.read_text(encoding="utf-8")
         script_js = script_path.read_text(encoding="utf-8")
         style_css = style_path.read_text(encoding="utf-8")

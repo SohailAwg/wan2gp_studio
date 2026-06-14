@@ -23,6 +23,7 @@
 *.backup
 *.pkl
 *.html
+!plugins/wan2gp-motion-designer/assets/motion_designer_iframe_template.html
 *.pdf
 *.whl
 *.exe
