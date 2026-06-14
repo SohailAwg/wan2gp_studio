@@ -1276,6 +1276,7 @@ class WAN2GPApplication:
             return
 
         safe_mode = wgp_globals.get("SAFE_MODE", False)
+        disable_bundled_plugins = str(os.environ.get("WAN2GP_DISABLE_BUNDLED_PLUGINS", "")).strip().lower() in ("1", "true", "yes", "on")
 
         if not safe_mode:
             auto_install_and_enable_default_plugins(self.plugin_manager, wgp_globals)
@@ -1286,6 +1287,14 @@ class WAN2GPApplication:
             print("[PluginManager] ERROR: server_config not found in globals.")
             return
         self.plugin_manager.set_server_config(server_config, server_config_filename)
+        if disable_bundled_plugins:
+            enabled_plugins = server_config.get("enabled_plugins", [])
+            if isinstance(enabled_plugins, list):
+                server_config["enabled_plugins"] = [plugin_id for plugin_id in enabled_plugins if plugin_id not in BUNDLED_PLUGINS]
+            server_config["motion_designer_bundled_migrated"] = 1
+            server_config["character_consistency_bundled_migrated"] = 1
+            self.plugin_manager._save_server_config()
+            print("[Plugins] Bundled user plugins disabled by WAN2GP_DISABLE_BUNDLED_PLUGINS.")
         if not safe_mode:
             try:
                 migration = importlib.import_module("wan2gp-configuration.defaults_migration")
