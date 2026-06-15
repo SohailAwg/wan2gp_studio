@@ -22,6 +22,7 @@ class CharacterConsistencyPlugin(WAN2GPPlugin):
         self.uninstallable = False
 
     def setup_ui(self):
+        self.request_component("state")
         self.add_tab(tab_id=PlugIn_Id, label="Characters", component_constructor=self.create_config_ui, position=2)
 
     def create_config_ui(self, api_session):
