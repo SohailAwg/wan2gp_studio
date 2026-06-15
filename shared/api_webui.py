@@ -903,10 +903,16 @@ class GradioWanGPSession:
                     return [*self._blank_outputs(output_count), load_queue_token, gr.skip(), call_id]
                 if state.job is not None:
                     state.job._webui_submission_ready.wait(timeout=0.05)
+                    load_queue_token = state.pop_primary_load_queue_token()
+                    if load_queue_token:
+                        return [*self._blank_outputs(output_count), load_queue_token, gr.skip(), call_id]
                 if state.done.wait(timeout=0.05):
                     if state.error is not None:
                         self._forget_wrapped_call(call_id)
                         raise self._as_gradio_error(state.error)
+                    load_queue_token = state.pop_primary_load_queue_token()
+                    if load_queue_token:
+                        return [*self._blank_outputs(output_count), load_queue_token, gr.skip(), call_id]
                     yielded_result = state.pop_yielded_result()
                     if yielded_result is not _NO_YIELDED_RESULT:
                         return [*self._normalize_callback_result(yielded_result, output_count), gr.skip(), gr.skip(), call_id]
