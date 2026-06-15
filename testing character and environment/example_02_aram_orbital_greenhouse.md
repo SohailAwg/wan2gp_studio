@@ -77,4 +77,4 @@ Close-up of Dr. Aram stopping beside the same hydroponic plant row, lifting his 
 
 ## Best first test
 
-Click **Preview Settings**, then **Generate First Shot**. For VACE Stand-In, keep the close-up face reference last in the reference list. If the motion dominates too much and the face drifts, use a shorter control video and a cleaner face reference.
+Click **Preview Settings**, then **Queue First Shot**. Watch the main WanGP queue, logs, downloads, and gallery for progress. For VACE Stand-In, keep the close-up face reference last in the reference list. If the motion dominates too much and the face drifts, use a shorter control video and a cleaner face reference.

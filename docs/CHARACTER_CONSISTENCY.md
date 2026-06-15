@@ -39,7 +39,7 @@ Use **JoyAI-Echo** when the goal is a connected multi-shot story with memory com
 3. Upload 2-4 clean references for Bernini, or follow the model-specific guidance above.
 4. Add one or more shot prompts. Separate shots with a blank line.
 5. Click **Preview Settings** to inspect the generated WanGP JSON.
-6. Click **Generate First Shot** for a smoke test.
+6. Click **Queue First Shot** for a smoke test. Progress appears in the main WanGP queue, logs, and gallery.
 7. Click **Export WanGP Settings** to save a single settings JSON or a multi-shot manifest under `character_packs/`.
 
 The exported settings can be processed from the UI, CLI, or Python API.

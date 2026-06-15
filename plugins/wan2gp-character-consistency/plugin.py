@@ -82,38 +82,16 @@ class CharacterConsistencyPlugin(WAN2GPPlugin):
                 raise gr.Error("\n".join(blocking))
             return str(packs.save_manifest_json(character_name, pack["settings"]))
 
-        def generate_first_shot(character_name, mode, identity_prompt, negative_prompt, style_prompt, shot_prompts_text, path_text, uploaded_files, resolution, video_length, seed, control_video, progress=gr.Progress(track_tqdm=False)):
+        def queue_first_shot(character_name, mode, identity_prompt, negative_prompt, style_prompt, shot_prompts_text, path_text, uploaded_files, resolution, video_length, seed, control_video):
             pack, issues = _build_payload(character_name, mode, identity_prompt, negative_prompt, style_prompt, shot_prompts_text, path_text, uploaded_files, resolution, video_length, seed, control_video)
             blocking = [issue for issue in issues if issue.startswith("Add ")]
             if blocking:
                 raise gr.Error("\n".join(blocking))
             settings = pack["settings"][0]
-
-            class CharacterCallbacks:
-                ratio = 0.0
-
-                def on_status(self, status):
-                    status = str(status or "").strip()
-                    if status:
-                        progress(self.ratio, desc=status)
-
-                def on_progress(self, update):
-                    self.ratio = max(0.0, min(1.0, float(getattr(update, "progress", 0)) / 100.0))
-                    progress(self.ratio, desc=str(getattr(update, "status", "") or "Generating..."))
-
-            job = api_session.submit_task(settings, callbacks=CharacterCallbacks())
+            job = api_session.submit_task(settings)
             active_job["job"] = job
-            try:
-                result = job.result()
-            finally:
-                if active_job.get("job") is job:
-                    active_job["job"] = None
-            if result.success and result.generated_files:
-                return result.generated_files[0]
-            if result.cancelled:
-                return gr.update()
-            errors = list(result.errors or [])
-            raise gr.Error(str(errors[0] if errors else "WanGP completed without returning an output file."))
+            gr.Info("First shot queued in the main WanGP generation queue. Watch the main queue, logs, and gallery for progress.")
+            return "Queued first shot in the main WanGP generation queue."
 
         def cancel_generation():
             job = active_job.get("job")
@@ -159,14 +137,14 @@ class CharacterConsistencyPlugin(WAN2GPPlugin):
                 preview_btn = gr.Button("Preview Settings")
                 export_pack_btn = gr.Button("Save Character Pack")
                 export_settings_btn = gr.Button("Export WanGP Settings")
-                generate_btn = gr.Button("Generate First Shot", variant="primary")
+                generate_btn = gr.Button("Queue First Shot", variant="primary")
                 cancel_btn = gr.Button("Cancel")
 
             settings_json = gr.Textbox(label="WanGP settings preview", lines=18, max_lines=30)
             with gr.Row():
                 pack_file = gr.File(label="Saved character pack")
                 settings_file = gr.File(label="Exported WanGP settings")
-            output_video = gr.Video(label="Generated first shot")
+            queue_status = gr.Textbox(label="First shot queue status", lines=2)
 
         inputs = [
             character_name,
@@ -185,5 +163,5 @@ class CharacterConsistencyPlugin(WAN2GPPlugin):
         preview_btn.click(preview_settings, inputs=inputs, outputs=[issue_box, settings_json])
         export_pack_btn.click(export_pack, inputs=inputs, outputs=[pack_file])
         export_settings_btn.click(export_settings, inputs=inputs, outputs=[settings_file])
-        generate_btn.click(generate_first_shot, inputs=inputs, outputs=[output_video])
+        generate_btn.click(queue_first_shot, inputs=inputs, outputs=[queue_status])
         cancel_btn.click(cancel_generation, queue=False)

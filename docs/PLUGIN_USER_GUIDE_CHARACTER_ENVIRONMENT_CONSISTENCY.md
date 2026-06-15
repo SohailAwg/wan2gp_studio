@@ -354,11 +354,13 @@ If you wrote multiple shot prompts, the exported JSON is a list of settings obje
 
 Use this file for UI processing, API submission, notebook automation, or batch tests.
 
-## Step 16: Generate The First Shot
+## Step 16: Queue The First Shot
 
-Click **Generate First Shot**.
+Click **Queue First Shot**.
 
 Use this as a smoke test before generating every shot.
+
+The plugin queues the first shot in the main WanGP generation queue and returns immediately. Watch the main queue, logs, model downloads, and gallery for progress. The video output appears in the normal WanGP gallery, not inside the plugin panel.
 
 Check:
 
@@ -442,7 +444,7 @@ Do not rely on a long prompt once at the top. Each shot should restate the impor
 8. Refresh the same Cloudflare URL.
 9. Open **Characters**.
 10. Build and preview your pack.
-11. Generate only the first shot.
+11. Queue only the first shot.
 12. Export settings only after the first shot looks stable.
 
 Do not stop the server while using the public URL. The URL works only while the Kaggle process and tunnel are alive.

@@ -78,4 +78,4 @@ Over-the-shoulder shot of Maya examining a glowing paper map at a small stall in
 
 ## Best first test
 
-Click **Preview Settings**, then **Generate First Shot**. If Maya's face or outfit drifts, remove the two environment reference images and keep only the three Maya references, while keeping the locked style/world prompt unchanged.
+Click **Preview Settings**, then **Queue First Shot**. Watch the main WanGP queue, logs, downloads, and gallery for progress. If Maya's face or outfit drifts, remove the two environment reference images and keep only the three Maya references, while keeping the locked style/world prompt unchanged.
